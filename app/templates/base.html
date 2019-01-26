@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% if title %}
+		<title>
+			{{ title }} - Joe's Server
+		</title>
+		{% else %}
+		<title>
+			Welcome!
+		</title>
+		{% endif %}
+	</head>
+	<body>
+		<div>
+			JoeJoe: <a href="/index">Home</a>
+		</div>
+		<hr>
+		{% block content %}
+		{% endblock %}
+	</body>
+</html>
