@@ -3,7 +3,7 @@
 {% block content %}
 	<div>
 		<h1>
-			Hello, {{ user.username }}
+			Hello, {{ current_user.username }}!
 		</h1>
 	</div>
 	{% for post in posts %}
