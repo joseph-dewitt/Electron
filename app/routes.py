@@ -12,12 +12,12 @@ def index():
 	user = {'username':'Diana'}
 	posts = [
 		{
-			'author': {'username': 'Joseeeeeeph'},
-			'body': 'Beautiful day in Portland!'
+			'author': {'username': 'Joseph'},
+			'body': 'Beautiful day in New York!'
 		},
 		{
-			'author': {'username': 'Susan'},
-			'body': 'The Avengers movie was so cool!'
+			'author': {'username': 'Diana'},
+			'body': 'What are you talking about, its freezing!'
 		}
 	]
 	return render_template(
