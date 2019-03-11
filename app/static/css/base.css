@@ -1,3 +1,19 @@
 body {
-	font-family: Helvetica;
-}
+  font-family: Helvetica; }
+
+  .container {
+    display: grid;
+    grid-template-rows: username start 64px description middle 64px end;
+    grid-template-columns: avatar 128px user auto end; }
+
+    .avatar {
+      grid-column: avatar;
+      grid-row: start / end; }
+
+      .username {
+        grid-column: user;
+        grid-row: username; }
+
+        .description {
+          grid-column: user;
+          grid-row: description; }
