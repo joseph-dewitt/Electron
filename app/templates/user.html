@@ -7,10 +7,15 @@
 	    <p class="description">
 	    	About: {{ user.about_me }} <br/>
 			Last Seen: {{ user.last_seen }}
+			{{ user.followers.count() }} followers, following {{ user.followed.count() }}.
 		</p>
 	</div>
 	{% if user == current_user %}
 		<p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
+	{% elif not current_user.is_following(user) %}
+		<p><a href="{{ url_for('follow_user', username=user.username) }}">Follow</a></p>
+	{% else %}
+		<p><a href="{{ url_for('unfollow_user', username=user.username) }}">Unfollow</a></p>
 	{% endif %}
     <hr>
     {% for post in posts %}

@@ -1,7 +1,8 @@
 from app import app
 from app import db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User, Post
+from app.email import send_password_reset_email
 from datetime import datetime
 from flask import render_template, flash, redirect, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
@@ -13,15 +14,32 @@ def before_request():
 		current_user.last_seen = datetime.utcnow()
 		db.session.commit()
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods = ['GET', 'POST'])
+@app.route('/index', methods = ['GET', 'POST'])
 @login_required
 def index():
 	posts = Post.query.all()
+	form = PostForm()
+	if form.validate_on_submit():
+		post = Post(body = form.post.data, author=current_user)
+		db.session.add(post)
+		db.session.commit()
+		flash('Your post is live!')
+		return redirect(url_for('index'))
 	return render_template(
 		'index.html',
 		title = 'Welcome!',
-		posts = posts)
+		posts = posts,
+		form = form)
+
+@app.route('/explore')
+@login_required
+def explore():
+	posts = Post.query.order_by(Post.timestamp.desc()).all()
+	return render_template(
+		'index.html',
+		title='Explore',
+		posts=posts)
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -83,6 +101,63 @@ def edit_profile():
 		form.username.data = current_user.username
 		form.about_me.data = current_user.about_me
 	return render_template('edit_profile.html', title='Edit Profile', form=form)
+
+@app.route('/follow/<username>', methods = ['POST'])
+@login_required
+def follow_user():
+	user = User.query.filter_by(username=username).first()
+	if user is None:
+		flash("User {} not found").format(username)
+		return redirect(url_for('index'))
+	if current_user.is_following(user):
+		flash("You're already following that user!")
+		return redirect(url_for('user', username=username))
+	current_user.follow(user)
+	db.session.commit()
+	flash("You are now following {}!").format(username)
+	return redirect(url_for('user', username=username))
+
+@app.route('/unfollow/<username>', methods = ['POST'])
+@login_required
+def unfollow_user():
+	user = User.query.filter_by(username=username).first()
+	if user is None:
+		flash("User {} not found").format(username)
+		return redirect(url_for('index'))
+	current_user.unfollow(user)
+	db.session.commit()
+	flash("You are not following {}!").format(username)
+	return redirect(url_for('user', username=username))
+
+@app.route('/request-password-reset', methods = ['GET', 'POST'])
+def reset_password_request():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	form = ResetPasswordRequestForm()
+	if form.validate_on_submit():
+		user = User.query.filter_by(email=form.email.data).first()
+		if user:
+			send_password_reset_email(user)
+		flash("Check your email for password reset instructions.")
+		return redirect(url_for('login'))
+	return render_template('reset_password_request.html', title='Reset Password', form=form)
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	user = User.verify_reset_password_token(token)
+	if not user:
+		return redirect(url_for('index'))
+	form = ResetPasswordForm()
+	if form.validate_on_submit():
+		user.set_password(form.password.data)
+		db.session.commit()
+		flash('Your password has been changed.')
+		return redirect(url_for('index'))
+	return render_template('reset_password.html', form=form)
+
+
 
 # @app.route('/arduino')
 # def arduino(message):

@@ -1,4 +1,8 @@
 <div>
-    <img class="avatar" src="{{ user.avatar(36) }}">
-    <p>{{ post.author.username }} says: {{ post.body }}</p>
+	{# Fix the styling here, the layout is wrong #}
+    <a href="{{ url_for('user', username=post.author.username) }}">
+    	<img class="avatar" src="{{ post.author.avatar(36) }}">
+    	<p>{{ post.author.username }} says:</p>
+    </a>
+	<p>{{ post.body|safe }}</p>
 </div>

@@ -13,9 +13,11 @@
 		{% endif %}
 	</head>
 	<body>
+		{# This should be centered more, there will likely be a menu on the left and/or right #}
 		<div>
-			JoeJoe:
+			{{ current_user.username}}:
 			<a href="{{ url_for('index') }}">Home</a>
+			<a href="{{ url_for('explore') }}">Explore</a>
 			{% if current_user.is_anonymous %}
 				<a href="{{ url_for('login') }}">Login</a>
 			{% else %}

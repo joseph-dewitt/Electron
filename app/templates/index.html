@@ -6,11 +6,22 @@
 			Hello, {{ current_user.username }}!
 		</h1>
 	</div>
+	<div>
+		{% if form %}
+			<form action="" method="post">
+				{{ form.hidden_tag() }}
+				<p>
+					{{ form.post.label }}<br>
+					{{ form.post(cols=32, rows=4) }}
+					{% for error in form.post.errors %}
+					<span style="color:red">[{{ error }}]</span>
+					{% endfor %}
+				</p>
+				<p>{{ form.submit }}</p>
+			</form>
+		{% endif %}
+	</div>
 	{% for post in posts %}
-		<div>
-			<p>
-				{{ post.author.username }} says: <b>{{post.body}}</b>
-			</p>
-		</div>
+		{% include '_post.html' %}
 	{% endfor %}
 {% endblock %}
