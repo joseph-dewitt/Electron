@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block app_content %}
 	<div class="container">
 	    <img class="avatar" src="{{ user.avatar(128) }}">
 	    <h1 class="username">User: {{ user.username }}</h1>
 	    <p class="description">
 	    	About: {{ user.about_me }} <br/>
-			Last Seen: {{ user.last_seen }}
+			Last Seen on: {{ moment(user.last_seen).format('LLL') }}
 			{{ user.followers.count() }} followers, following {{ user.followed.count() }}.
 		</p>
 	</div>

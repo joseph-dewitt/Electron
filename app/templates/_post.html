@@ -2,7 +2,7 @@
 	{# Fix the styling here, the layout is wrong #}
     <a href="{{ url_for('user', username=post.author.username) }}">
     	<img class="avatar" src="{{ post.author.avatar(36) }}">
-    	<p>{{ post.author.username }} says:</p>
+        <p>{{ post.author.username }} said {{ moment(post.timestamp).fromNow() }}:</p>
     </a>
 	<p>{{ post.body|safe }}</p>
 </div>

@@ -1,40 +1,40 @@
-<!doctype html>
-<html>
-	<head>
-		<link rel="stylesheet" href="{{ url_for('static', filename='scss/base.css') }}">
-		{% if title %}
-		<title>
-			{{ title }} - Joe's Server
-		</title>
-		{% else %}
-		<title>
-			Welcome!
-		</title>
-		{% endif %}
-	</head>
-	<body>
-		{# This should be centered more, there will likely be a menu on the left and/or right #}
-		<div>
-			{{ current_user.username}}:
-			<a href="{{ url_for('index') }}">Home</a>
-			<a href="{{ url_for('explore') }}">Explore</a>
-			{% if current_user.is_anonymous %}
-				<a href="{{ url_for('login') }}">Login</a>
-			{% else %}
-				<a href="{{ url_for('user', username=current_user.username) }}">Profile</a>
-				<a href="{{ url_for('logout') }}">Logout</a>
-			{% endif %}
-		</div>
-		<hr>
-		{% with messages = get_flashed_messages() %}
-			{% if messages %}
-				<ul>
-					{% for message in messages %}
-						<li>{{ message }}</li>
-					{% endfor %}
-			{% endif %}
-		{% endwith %}
-		{% block content %}
-		{% endblock %}
-	</body>
-</html>
+{% extends 'bootstrap/base.html' %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='scss/base.css') }}">
+{% endblock %}
+
+{% block title %}
+    {% if title %}{{ title }} - Welcome!{% else %}Hi{% endif %}
+{% endblock %}
+
+{% block content %}
+    <div>
+        {{ current_user.username}}:
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('explore') }}">Explore</a>
+        {% if current_user.is_anonymous %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% else %}
+            <a href="{{ url_for('user', username=current_user.username) }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+    {% endif %}
+    </div>
+    <hr>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block app_content %}
+    {% endblock %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock %}

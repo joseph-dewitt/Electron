@@ -1,7 +1,8 @@
 body {
-  font-family: Helvetica; }
+  font-family: Helvetica; 
+}
 
-  .container {
+.container {
     display: grid;
     grid-template-rows: username start 64px description middle 64px end;
     grid-template-columns: avatar 128px user auto end; }
